@@ -5,7 +5,7 @@ Created on Fri Nov 24 20:02:25 2017
 
 @author: austinlee
 """
-import sys, os, glob, nltk, argparse, re
+import sys, os, nltk
 from collections import Counter
 from nltk.corpus import wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -16,6 +16,7 @@ from baseline_emotion import Classifier
 
 tweet_data = []
 emotion_data = []
+niters=30
 
 def load_docs(tweets):
     # Create parallel lists of documents and labels
@@ -30,11 +31,15 @@ def load_docs(tweets):
 
 def load_featurized_docs(datasplit):
     rawdocs, labels = load_docs(datasplit)
+    train_docs=rawdocs[0:999]
+    test_docs=rawdocs[1000:len(rawdocs)]
+    train_labels=labels[0:999]
+    test_labels=labels[1000:len(labels)]
     assert len(rawdocs)==len(labels)>0,datasplit
     featdocs = []
-    for d in rawdocs:
+    for d in train_docs:
         featdocs.append(extract_feats(d))
-    return featdocs, labels
+    return featdocs, train_labels, test_docs, test_labels
 
 def extract_feats(doc):
     """
@@ -43,7 +48,8 @@ def extract_feats(doc):
     A document's percepts are the same regardless of the label considered.
     """
     ff = Counter()
-    
+    for word in doc:
+        ff[word]=1
 
     return ff
 
@@ -52,7 +58,6 @@ def load_data():
     # Open and read in training data into tweet_data[[]] array of arrays
     # FORMAT: tweet_data[x][0]=ID, tweet_data[x][1]=TOPIC, tweet_data[x][2]=TWEET, tweet_data[x][3]=STANCE
     with open("training_data.txt",'r', encoding="utf-8") as inFile:
-        print("File opened successfully")
         for line in inFile:
             line=line.rstrip('\n')
             data=line.split("\t")
@@ -62,7 +67,6 @@ def load_data():
     # Open and read in emotion data into emotion_Data[[]] array of arrays
     # FORMAT: emotion_data[x][0]=WORD, emotion_data[x][1]=EMOTION, emotion_data[x][2]=ASSOCIATION     
     with open("emotion_data.txt", 'r') as nextInFile:
-        print("File opened successfully")
         for line in nextInFile:
             line=line.rstrip('\n')
             data=line.split('\t')
@@ -72,4 +76,6 @@ def load_data():
 
 if __name__ == "__main__":
     load_data()
-    load_featurized_docs(tweet_data)
+    train_docs, train_labels, test_docs, test_labels = load_featurized_docs(tweet_data)
+    ptron = Perceptron(train_docs, train_labels, MAX_ITERATIONS=niters, dev_docs=test_docs, dev_labels=test_labels)
+    #acc = ptron.test_eval(test_docs, test_labels)
