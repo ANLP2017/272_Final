@@ -31,10 +31,10 @@ def load_docs(tweets):
 
 def load_featurized_docs(datasplit):
     rawdocs, labels = load_docs(datasplit)
-    train_docs=rawdocs[0:999]
-    test_docs=rawdocs[1000:len(rawdocs)]
-    train_labels=labels[0:999]
-    test_labels=labels[1000:len(labels)]
+    train_docs=rawdocs[0:2531]
+    test_docs=rawdocs[2532:]
+    train_labels=labels[0:2531]
+    test_labels=labels[2532:]
     assert len(rawdocs)==len(labels)>0,datasplit
     featdocs = []
     for d in train_docs:
@@ -48,7 +48,9 @@ def extract_feats(doc):
     A document's percepts are the same regardless of the label considered.
     """
     ff = Counter()
-    for word in doc:
+
+    # very basic tokenization
+    for word in doc.split(" "):
         ff[word]=1
 
     return ff
