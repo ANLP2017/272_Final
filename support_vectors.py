@@ -178,8 +178,8 @@ kmeans = SentaClauseClustering(
 	processing.test_labels)
 kmeans.classifier()
 kmeans.make_predictions()
-import pdb; pdb.set_trace()
-pass
+# import pdb; pdb.set_trace()
+# pass
 
 # plt.figure(1)
 # plt.clf()
