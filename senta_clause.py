@@ -14,6 +14,8 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from sent_perceptron import Perceptron
 from baseline_emotion import Classifier
 from rose import Rosette
+from watson import Watson
+
 
 non_feature_data = []
 tweet_data = []
@@ -28,22 +30,22 @@ def load_docs(tweets):
         docs.append(tweet[2])
         # Append stance to labels
         labels.append(tweet[3])
-        
+
     return docs, labels
 
 def load_featurized_docs(datasplit):
     rawdocs, labels = load_docs(datasplit)
-    
+
     # Perceptron data:
     train_docs=rawdocs[0:2531]
     test_docs=rawdocs[2532:]
     train_labels=labels[0:2531]
     test_labels=labels[2532:]
-    
+
     # Rosette data:
     non_feature_data=rawdocs[0:5]
     rose_labels=labels[0:5]
-    
+
     assert len(rawdocs)==len(labels)>0,datasplit
     train_featdocs = []
     test_featdocs = []
@@ -60,16 +62,16 @@ def extract_feats(doc):
     A document's percepts are the same regardless of the label considered.
     """
     ff = Counter()
-    
+
     # Creates an array of words representing each tweet
     doc_split=doc.split()
-    
+
     """
     # Unigram feature extraction
     for word in doc_split:
         ff[word]=1
     """
-        
+
     # Bigram feature extraction
     for y in range(1, len(doc_split)):
         current_word = doc_split[y]
@@ -82,7 +84,7 @@ def extract_feats(doc):
     for word in doc_split:
         if word in emotion_dictionary:
             ff[emotion_dictionary[word]]=1
-    
+
     return ff
 
 def emo_dict(emotion_data):
@@ -101,16 +103,16 @@ def load_data():
         del tweet_data[0] # First line does not contain data
 
     # Open and read in emotion data into emotion_Data[[]] array of arrays
-    # FORMAT: emotion_data[x][0]=WORD, emotion_data[x][1]=EMOTION, emotion_data[x][2]=ASSOCIATION     
+    # FORMAT: emotion_data[x][0]=WORD, emotion_data[x][1]=EMOTION, emotion_data[x][2]=ASSOCIATION
     with open("emotion_data.txt", 'r') as nextInFile:
         for line in nextInFile:
             line=line.rstrip('\n')
             data=line.split('\t')
             emotion_data.append(data)
         del emotion_data[0] # First line does not contain data
-        
+
     emo_dict(emotion_data)
-        
+
 
 if __name__ == "__main__":
     """
@@ -124,7 +126,11 @@ if __name__ == "__main__":
     ptron = Perceptron(train_docs, train_labels, MAX_ITERATIONS=niters, dev_docs=test_docs, dev_labels=test_labels)
     acc = ptron.test_eval(test_docs, test_labels)
     """
-    
+
     # Rosette Sentiment Analysis (API)
-    _rose = Rosette(nf_data, rose_labels)
-    acc = _rose.test_eval()
+    # _rose = Rosette(nf_data, rose_labels)
+    # acc = _rose.test_eval()
+
+    #Watson api
+    _watson =  Watson(nf_data, rose_labels)
+    acc = _watson.test_eval()
