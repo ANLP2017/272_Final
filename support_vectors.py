@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import re
 from nltk.stem import WordNetLemmatizer
 import random
+from sklearn.naive_bayes import MultinomialNB
 
 # input two arrays: an array X of size [n_samples, n_features] holding the training samples, 
 # and an array y of class labels (strings or integers), size [n_samples]
@@ -23,6 +24,7 @@ class Preprocessing:
 			tweets = json.load(f)
 
 			cleaned_tweets = []
+			i = 0
 			for tweet in tweets:
 				cleaned_tweet = []
 
@@ -66,12 +68,14 @@ class Preprocessing:
 			test_labels = json.load(f)
 			# test_labels = np.array(test_labels)
 
-		# import pdb; pdb.set_trace()
-		# pass
-
 		train_data = cleaned_tweets[:2531]
 		test_data = cleaned_tweets[2532:]
 
+		# import pdb; pdb.set_trace()
+		# pass
+
+		self.original_train = train_data
+		self.original_test = test_data
 		return train_data, train_labels, test_data, test_labels
 
 	def setup_sentiment_lexicon(self, docs):
@@ -131,7 +135,7 @@ class SentaClauseClustering:
 		self.test_docs = test_docs
 		self.test_labels = test_labels
 
-		self.clustering_clf = KMeans(n_clusters=3)
+		self.clustering_clf = KMeans(n_clusters=4)
 
 	def classifier(self):
 		self.clustering_clf.fit(self.train_docs)
@@ -160,6 +164,21 @@ class SentaClauseSvm:
 	def make_predictions(self):
 		self.predictions = self.svm_clf.predict(self.test_docs)
 
+class SentaClauseNB:
+	def __init__(self, train_docs=None, train_labels=None, test_docs=None, test_labels=None):
+		self.train_docs = train_docs
+		self.train_labels = train_labels
+		self.test_docs = test_docs
+		self.test_labels = test_labels
+
+		self.nb_clf = MultinomialNB()
+
+	def classifier(self):
+		self.nb_clf.fit(self.train_docs, self.train_labels)
+
+	def make_predictions(self):
+		self.predictions = self.nb_clf.predict(self.test_docs)
+
 processing = Preprocessing()
 test = SentaClauseSvm(
 	processing.sentiment_feature_docs[0], 
@@ -178,8 +197,17 @@ kmeans = SentaClauseClustering(
 	processing.test_labels)
 kmeans.classifier()
 kmeans.make_predictions()
-# import pdb; pdb.set_trace()
-# pass
+
+nb = SentaClauseNB(
+	processing.sentiment_feature_docs[0], 
+	processing.train_labels, 
+	processing.sentiment_feature_docs[1], 
+	processing.test_labels)
+nb.classifier()
+nb.make_predictions()
+
+import pdb; pdb.set_trace()
+pass
 
 # plt.figure(1)
 # plt.clf()
