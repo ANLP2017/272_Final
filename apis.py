@@ -95,12 +95,13 @@ class Watson(Rosette):
         self.data=nf_data
         self.test_labels=labels
         self.do_Werk(self.targets, self.data)
+        global result_array
+        pred_array = []
 
     def run(self, target, data):
         response = natural_language_understanding.analyze(
             text=target + " " + data,
-            features=Features(sentiment=SentimentOptions(targets=[target])))
-        print(response)
+            features=Features(sentiment=SentimentOptions(targets=[target])))["sentiment"]["targets"][0]["label"]
         return response
 
     def do_Werk(self, targets, data):
@@ -120,8 +121,16 @@ class Watson(Rosette):
                 pred_array.append("NONE")
 
 class Aylien(Watson):
+    def __init__(self, nf_data, labels):
+        self.data=nf_data
+        self.test_labels=labels
+        self.do_Werk(self.data)
+        global result_array
+        pred_array = []
+
     def run(self, data):
         sentiment = client.Sentiment({'text': data})["polarity"]
+        print(sentiment)
         return sentiment
 
     def do_Werk(self, data):
@@ -142,10 +151,16 @@ class Indico(Rosette):
             for entry in data:
                 RESULT = self.run(entry)
                 result_array.append(RESULT)
-                print(json.dump(RESULT, outfile, indent=2))
+                json.dump(RESULT, outfile, indent=2)
 
 
     def predict(self):
+        self.test_labels.append("FAVOR")
+        self.test_labels.append("AGAINST")
+        self.test_labels.append("NONE")
+        pred_array.append("FAVOR")
+        pred_array.append("AGAINST")
+        pred_array.append("NONE")
         for _result in result_array:
             if _result > .5:
                 pred_array.append("FAVOR")
