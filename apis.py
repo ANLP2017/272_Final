@@ -13,7 +13,7 @@ from rosette.api import API, DocumentParameters, RosetteException
 from evaluation import Eval
 
 from watson_developer_cloud import NaturalLanguageUnderstandingV1 as NaturalLanguageUnderstanding
-from watson_developer_cloud.natural_language_understanding_v1 import Features, EntitiesOptions, KeywordsOptions
+from watson_developer_cloud.natural_language_understanding_v1 import Features, SentimentOptions
 
 from aylienapiclient import textapi
 
@@ -90,28 +90,31 @@ class Rosette(object):
         return ev.accuracy()
 
 class Watson(Rosette):
-    def run(self, data):
+    def __init__(self, targets, nf_data, labels):
+        self.targets=targets
+        self.data=nf_data
+        self.test_labels=labels
+        self.do_Werk(self.targets, self.data)
+
+    def run(self, target, data):
         response = natural_language_understanding.analyze(
-          text=data,
-          features=Features(entities=EntitiesOptions(
-                                  emotion=True, sentiment=True,limit=2),
-                           keywords=KeywordsOptions(
-                                  emotion=True, sentiment=True,limit=2
-                                            ))).get("keywords")[0]["sentiment"]["label"]
+            text=data,
+            features=Features(sentiment=SentimentOptions(targets=[target])))
+        print(response)
         return response
 
-    def do_Werk(self, data):
+    def do_Werk(self, targets, data):
         with open('watson_data.txt', 'w') as outfile:
-            for entry in data:
-                RESULT = self.run(entry)
+            for index, entry in enumerate(data):
+                RESULT = self.run(targets[index], entry)
                 result_array.append(RESULT)
                 print(json.dump(RESULT, outfile, indent=2))
 
     def predict(self):
         for _result in result_array:
-            if _result =='positive':
+            if _result == 'positive':
                 pred_array.append("FAVOR")
-            elif _result =='negative':
+            elif _result == 'negative':
                 pred_array.append("AGAINST")
             elif _result =='neutral':
                 pred_array.append("NONE")

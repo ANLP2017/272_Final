@@ -23,17 +23,19 @@ emotion_dictionary = {}
 
 def load_docs(tweets):
     # Create parallel lists of documents and labels
-    docs, labels = [], []
+    targets, docs, labels = [], [], []
     for tweet in tweets:
+        #targets
+        targets.append(tweet[1])
         # Append tweet to rawdocs
         docs.append(tweet[2])
         # Append stance to labels
         labels.append(tweet[3])
 
-    return docs, labels
+    return targets, docs, labels
 
 def load_featurized_docs(datasplit):
-    rawdocs, labels = load_docs(datasplit)
+    targets, rawdocs, labels = load_docs(datasplit)
 
     # Perceptron data:
     train_docs=rawdocs[0:2531]
@@ -41,9 +43,10 @@ def load_featurized_docs(datasplit):
     train_labels=labels[0:2531]
     test_labels=labels[2532:]
 
-    # Rosette data:
-    non_feature_data=rawdocs[0:5]
-    rose_labels=labels[0:5]
+    # api data:
+    targets= targets[0:2814]
+    non_feature_data=rawdocs[0:2814]
+    rose_labels=labels[0:2814]
 
     assert len(rawdocs)==len(labels)>0,datasplit
     train_featdocs = []
@@ -52,7 +55,7 @@ def load_featurized_docs(datasplit):
         train_featdocs.append(extract_feats(d))
     for e in test_docs:
         test_featdocs.append(extract_feats(e))
-    return train_featdocs, train_labels, test_featdocs, test_labels, non_feature_data, rose_labels
+    return train_featdocs, train_labels, test_featdocs, test_labels, targets, non_feature_data, rose_labels
 
 def extract_feats(doc):
     """
@@ -119,7 +122,7 @@ if __name__ == "__main__":
     niters = int(args[0])
     """
     load_data()
-    train_docs, train_labels, test_docs, test_labels, nf_data, rose_labels = load_featurized_docs(tweet_data)
+    train_docs, train_labels, test_docs, test_labels, targets, nf_data, rose_labels = load_featurized_docs(tweet_data)
     """
     # Perceptron Model
     ptron = Perceptron(train_docs, train_labels, MAX_ITERATIONS=niters, dev_docs=test_docs, dev_labels=test_labels)
@@ -131,13 +134,13 @@ if __name__ == "__main__":
     # acc = _rose.test_eval()
 
     #Watson api
-    # _watson =  Watson(nf_data, rose_labels)
-    # acc = _watson.test_eval()
+    _watson =  Watson(targets, nf_data, rose_labels)
+    acc = _watson.test_eval()
 
     #Aylien
     # _ay = Aylien(nf_data, rose_labels)
     # acc = _ay.test_eval()
 
     #indico
-    _indico = Indico(nf_data, rose_labels)
-    acc = _indico.test_eval()
+    # _indico = Indico(nf_data, rose_labels)
+    # acc = _indico.test_eval()
