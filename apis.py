@@ -98,7 +98,7 @@ class Watson(Rosette):
 
     def run(self, target, data):
         response = natural_language_understanding.analyze(
-            text=data,
+            text=target + " " + data,
             features=Features(sentiment=SentimentOptions(targets=[target])))
         print(response)
         return response

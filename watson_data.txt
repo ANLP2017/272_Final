@@ -1,0 +1,101 @@
+{
+  "language": "en",
+  "usage": {
+    "text_characters": 144,
+    "features": 1,
+    "text_units": 1
+  },
+  "sentiment": {
+    "document": {
+      "score": 0.835547,
+      "label": "positive"
+    },
+    "targets": [
+      {
+        "score": 0.835547,
+        "text": "Atheism",
+        "label": "positive"
+      }
+    ]
+  }
+}{
+  "language": "en",
+  "usage": {
+    "text_characters": 115,
+    "features": 1,
+    "text_units": 1
+  },
+  "sentiment": {
+    "document": {
+      "score": 0.600472,
+      "label": "positive"
+    },
+    "targets": [
+      {
+        "score": 0.47337,
+        "text": "Atheism",
+        "label": "positive"
+      }
+    ]
+  }
+}{
+  "language": "en",
+  "usage": {
+    "text_characters": 116,
+    "features": 1,
+    "text_units": 1
+  },
+  "sentiment": {
+    "document": {
+      "score": 0.133966,
+      "label": "positive"
+    },
+    "targets": [
+      {
+        "score": -0.574288,
+        "text": "Atheism",
+        "label": "negative"
+      }
+    ]
+  }
+}{
+  "language": "en",
+  "usage": {
+    "text_characters": 147,
+    "features": 1,
+    "text_units": 1
+  },
+  "sentiment": {
+    "document": {
+      "score": 0.476054,
+      "label": "positive"
+    },
+    "targets": [
+      {
+        "score": 0.622066,
+        "text": "Atheism",
+        "label": "positive"
+      }
+    ]
+  }
+}{
+  "language": "en",
+  "usage": {
+    "text_characters": 127,
+    "features": 1,
+    "text_units": 1
+  },
+  "sentiment": {
+    "document": {
+      "score": -0.721271,
+      "label": "negative"
+    },
+    "targets": [
+      {
+        "score": -0.824767,
+        "text": "Atheism",
+        "label": "negative"
+      }
+    ]
+  }
+}
