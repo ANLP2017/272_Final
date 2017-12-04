@@ -13,8 +13,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 
 from sent_perceptron import Perceptron
 from baseline_emotion import Classifier
-from rose import Rosette
-from watson import Watson
+from apis import Rosette, Watson, Aylien, Indico
 
 
 non_feature_data = []
@@ -132,5 +131,13 @@ if __name__ == "__main__":
     # acc = _rose.test_eval()
 
     #Watson api
-    _watson =  Watson(nf_data, rose_labels)
-    acc = _watson.test_eval()
+    # _watson =  Watson(nf_data, rose_labels)
+    # acc = _watson.test_eval()
+
+    #Aylien
+    # _ay = Aylien(nf_data, rose_labels)
+    # acc = _ay.test_eval()
+
+    #indico
+    _indico = Indico(nf_data, rose_labels)
+    acc = _indico.test_eval()
