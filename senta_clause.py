@@ -70,7 +70,7 @@ def extract_feats(doc):
 
     # Bias feature
     ff['Bias']=1
-    
+
     # Unigram feature extraction
     for word in doc_split:
         ff[word]=1
@@ -84,7 +84,7 @@ def extract_feats(doc):
         ff[bigram]=1
 
     """
-            
+
     # Emotion feature extraction
     # (if a word has an association with an emotion, the boolean for that emotion becomes 1 for the entire tweet)
     for word in doc_split:
@@ -95,7 +95,7 @@ def extract_feats(doc):
         else:
             similarities = {}
             sets = []
-            
+
             similarities['anger'] = 0
             similarities['anticipation'] = 0
             similarities['disgust'] = 0
@@ -104,7 +104,7 @@ def extract_feats(doc):
             similarities['sadness'] = 0
             similarities['surprise'] = 0
             similarities['trust']= 0
-            
+
             if wn.synsets(word):
                 word_set = wn.synsets(word)[0]
                 sets.append(wn.synsets("anger")[0])
@@ -115,7 +115,7 @@ def extract_feats(doc):
                 sets.append(wn.synsets("sadness")[0])
                 sets.append(wn.synsets("surprise")[0])
                 sets.append(wn.synsets("trust")[0])
-                
+
                 if not word_set:
                     break
                 else:
@@ -195,17 +195,17 @@ def load_data():
 
 
 if __name__ == "__main__":
-    """
-    args = sys.argv[1:]
-    niters = int(args[0])
-    """
+
+
     load_data()
     train_docs, train_labels, test_docs, test_labels, targets, nf_data, rose_labels = load_featurized_docs(tweet_data)
-    """
-    # Perceptron Model
-    ptron = Perceptron(train_docs, train_labels, MAX_ITERATIONS=niters, dev_docs=test_docs, dev_labels=test_labels)
-    acc = ptron.test_eval(test_docs, test_labels)
-    """
+
+
+    # Perceptron Model - to use this run: python senta_clause.py #number_of_iterations. i.e python python senta_clause.py 30
+    # args = sys.argv[1:]
+    # niters = int(args[0])
+    # ptron = Perceptron(train_docs, train_labels, MAX_ITERATIONS=niters, dev_docs=test_docs, dev_labels=test_labels)
+    # acc = ptron.test_eval(test_docs, test_labels)
 
     # Rosette Sentiment Analysis (API)
     # _rose = Rosette(nf_data, rose_labels)
