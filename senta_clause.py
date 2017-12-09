@@ -44,9 +44,9 @@ def load_featurized_docs(datasplit):
     test_labels=labels[2532:]
 
     # api data:
-    targets= targets[0:400]
-    non_feature_data=rawdocs[0:400]
-    rose_labels=labels[0:400]
+    targets= targets[400:800]
+    non_feature_data=rawdocs[400:800]
+    rose_labels=labels[400:800]
 
     assert len(rawdocs)==len(labels)>0,datasplit
     train_featdocs = []
@@ -212,13 +212,13 @@ if __name__ == "__main__":
     # acc = _rose.test_eval()
 
     #Watson api
-    # _watson =  Watson(targets, nf_data, rose_labels)
-    # acc = _watson.test_eval()
+    _watson =  Watson(targets, nf_data, rose_labels)
+    acc = _watson.test_eval()
 
     #Aylien
     # _ay = Aylien(nf_data, rose_labels)
     # acc = _ay.test_eval()
 
     #indico
-    _indico = Indico(nf_data, rose_labels)
-    acc = _indico.test_eval()
+    # _indico = Indico(nf_data, rose_labels)
+    # acc = _indico.test_eval()
