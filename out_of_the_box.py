@@ -1,6 +1,5 @@
 from sklearn import svm
 from sklearn.cluster import KMeans
-import numpy as np
 import json
 import re
 from nltk.stem import WordNetLemmatizer
@@ -49,7 +48,6 @@ class Preprocessing:
 	
 		with open('train_labels.json', 'r') as f:
 			train_labels = json.load(f)
-			# train_labels = np.array(train_labels)
 
 		with open('test_docs.json', 'r') as f:
 			test_data = json.load(f)
@@ -61,7 +59,6 @@ class Preprocessing:
 			
 		with open('test_labels.json', 'r') as f:
 			test_labels = json.load(f)
-			# test_labels = np.array(test_labels)
 
 		train_data = cleaned_tweets[:2531]
 		test_data = cleaned_tweets[2532:]
@@ -273,7 +270,7 @@ class SentaClauseClustering:
 		self.test_docs = test_docs
 		self.test_labels = test_labels
 
-		self.clustering_clf = KMeans(n_clusters=5)
+		self.clustering_clf = KMeans(n_clusters=2)
 
 	def classifier(self):
 		self.clustering_clf.fit(self.train_docs)
