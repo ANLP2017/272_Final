@@ -5,7 +5,7 @@ Created on Fri Nov 24 20:02:25 2017
 
 @author: austinlee
 """
-import sys, os, nltk
+import sys, os, nltk, random
 from collections import Counter
 from nltk.corpus import wordnet
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -68,7 +68,9 @@ def extract_feats(doc):
     # Creates an array of words representing each tweet
     doc_split=doc.split()
 
-    """
+    # Bias feature
+    ff['Bias']=1
+    
     # Unigram feature extraction
     for word in doc_split:
         ff[word]=1
@@ -81,18 +83,93 @@ def extract_feats(doc):
         bigram = prev_word+" "+current_word
         ff[bigram]=1
 
+    """
+            
     # Emotion feature extraction
     # (if a word has an association with an emotion, the boolean for that emotion becomes 1 for the entire tweet)
     for word in doc_split:
         if word in emotion_dictionary:
-            ff[emotion_dictionary[word]]=1
+            for emotion in word:
+                ff[emotion]=1
+        """
+        else:
+            similarities = {}
+            sets = []
+            
+            similarities['anger'] = 0
+            similarities['anticipation'] = 0
+            similarities['disgust'] = 0
+            similarities['fear'] = 0
+            similarities['joy'] = 0
+            similarities['sadness'] = 0
+            similarities['surprise'] = 0
+            similarities['trust']= 0
+            
+            if wn.synsets(word):
+                word_set = wn.synsets(word)[0]
+                sets.append(wn.synsets("anger")[0])
+                sets.append(wn.synsets("anticipation")[0])
+                sets.append(wn.synsets("disgust")[0])
+                sets.append(wn.synsets("fear")[0])
+                sets.append(wn.synsets("joy")[0])
+                sets.append(wn.synsets("sadness")[0])
+                sets.append(wn.synsets("surprise")[0])
+                sets.append(wn.synsets("trust")[0])
+                
+                if not word_set:
+                    break
+                else:
+                    index = 0
+                    for _set in sets:
+                        if index == 0:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['anger'] = s
+                        if index == 1:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['anticipation'] = s
+                        if index == 2:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['disgust'] = s
+                        if index == 3:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['fear'] = s
+                        if index == 4:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['joy'] = s
+                        if index == 0:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['sadness'] = s
+                        if index == 0:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['surprise'] = s
+                        if index == 0:
+                            s = word_set.wup_similarity(_set)
+                            if s != None:
+                                similarities['trust'] = s
+                        index+=1
+                    emo = min(similarities, key=similarities.get)
+                    ff[emo]=1
+        """
 
     return ff
 
 def emo_dict(emotion_data):
     for entry in emotion_data:
-        if entry[2]=='1':
-            emotion_dictionary[entry[0]]=entry[1]
+        # Word does not exist in dictionary, possibly multiple emotions associated with it
+        if entry[2]=='1' and entry[0] not in emotion_dictionary:
+            emotions=[]
+            emotions.append(entry[1])
+            emotion_dictionary[entry[0]]=emotions
+        # Word exists in dictionary, add relevant emotion to list corresponding to word
+        elif entry[2]=='1' and entry[0] in emotion_dictionary:
+            emotion_dictionary[entry[0]].append(entry[1])
 
 def load_data():
     # Open and read in training data into tweet_data[[]] array of arrays
@@ -114,6 +191,7 @@ def load_data():
         del emotion_data[0] # First line does not contain data
 
     emo_dict(emotion_data)
+    random.shuffle(tweet_data)
 
 
 if __name__ == "__main__":
