@@ -202,18 +202,18 @@ if __name__ == "__main__":
 
 
     # Perceptron Model - to use this run: python senta_clause.py #number_of_iterations. i.e python python senta_clause.py 30
-    # args = sys.argv[1:]
-    # niters = int(args[0])
-    # ptron = Perceptron(train_docs, train_labels, MAX_ITERATIONS=niters, dev_docs=test_docs, dev_labels=test_labels)
-    # acc = ptron.test_eval(test_docs, test_labels)
+    args = sys.argv[1:]
+    niters = int(args[0])
+    ptron = Perceptron(train_docs, train_labels, MAX_ITERATIONS=niters, dev_docs=test_docs, dev_labels=test_labels)
+    acc = ptron.test_eval(test_docs, test_labels)
 
     # Rosette Sentiment Analysis (API)
     # _rose = Rosette(nf_data, rose_labels)
     # acc = _rose.test_eval()
 
     #Watson api
-    _watson =  Watson(targets, nf_data, rose_labels)
-    acc = _watson.test_eval()
+    # _watson =  Watson(targets, nf_data, rose_labels)
+    # acc = _watson.test_eval()
 
     #Aylien
     # _ay = Aylien(nf_data, rose_labels)
