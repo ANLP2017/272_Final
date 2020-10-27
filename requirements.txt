@@ -5,7 +5,7 @@ blessings==1.6
 certifi==2017.11.5
 cffi==1.11.2
 chardet==3.0.4
-cryptography==2.1.4
+cryptography==3.2
 futures==3.1.1
 httplib2==0.10.3
 idna==2.6
